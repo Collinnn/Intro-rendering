@@ -1,0 +1,3 @@
+﻿cl : command line  warning D9035: option 'Gm' has been deprecated and will be removed in a future release
+  RenderEngine.cpp
+  raytrace.vcxproj -> C:\Users\Tobias Collin\Documents\GitHub\Intro-rendering\Debug\raytrace.exe

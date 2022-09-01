@@ -1,0 +1,4 @@
+C:/Users/Tobias Collin/Documents/GitHub/Intro-rendering/out/build/x64-Debug/CMakeFiles/SOIL.dir
+C:/Users/Tobias Collin/Documents/GitHub/Intro-rendering/out/build/x64-Debug/CMakeFiles/raytrace.dir
+C:/Users/Tobias Collin/Documents/GitHub/Intro-rendering/out/build/x64-Debug/CMakeFiles/edit_cache.dir
+C:/Users/Tobias Collin/Documents/GitHub/Intro-rendering/out/build/x64-Debug/CMakeFiles/rebuild_cache.dir
