@@ -1,7 +1,8 @@
 {
   "ExpandedNodes": [
-    ""
+    "",
+    "\\raytrace"
   ],
-  "SelectedNode": "\\render.sln",
+  "SelectedNode": "\\raytrace\\RenderEngine.cpp",
   "PreviewInSolutionExplorer": false
 }

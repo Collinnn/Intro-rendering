@@ -11,6 +11,7 @@ void Camera::set(const float3& eye_point, const float3& view_point, const float3
   lookat = view_point;
   up = up_vector;
   cam_const = camera_constant;
+  
 
   // Compute camera coordinate frame (image plane normal and basis).
   //
@@ -22,6 +23,7 @@ void Camera::set(const float3& eye_point, const float3& view_point, const float3
   // Hint: The OptiX math library has a function normalize(v) which returns
   //       the vector v normalized and a function cross(v, w) which returns
   //       the cross product of the vectors v and w.
+  
 
 
   // Assume that the height and the width of the film is 1.
@@ -32,20 +34,32 @@ void Camera::set(const float3& eye_point, const float3& view_point, const float3
   // camera_constant  (the camera constant, d)
   // fov              (the vertical field of view of the camera, phi)
   //
-  // Hints: (a) The inverse tangent function is called atan(x).
+  // Hints: (a) The inverse tangent function is called atan(x).               
   //        (b) The OptiX math library has a constant for 1/pi called M_1_PIf.
-  //        (c) The following constant is the field of view that you should 
-  //            get with the default scene (if you set a breakpoint and run
-  //            in Debug mode, you can use it to check your code).
-  fov = 53.13f;
+  //        (c) The following constant is the field of view that you should   
+  //            get with the default scene (if you set a breakpoint and run   
+  //            in Debug mode, you can use it to check your code).            
+  
+  double const height = 1.0 , const width = 1.0;
+
+  //These does nothing with the height, width at 1. However it's nice to know 
+  //ip_xaxis = (ip_xaxis + 0.5)*(1.0/height) - (0.5 * (width / height));      
+  //ip_yaxis = (ip_yaxis + 0.5)*(1.0/height) - 0.5;                           
+  ////////////////////////////////////////////////////////////////////////////
+  
+  //Change of basis matrix
+  ip_normal = (lookat - eye) / normalize(lookat - eye);
+  ip_xaxis = cross(ip_normal, up)/(normalize(cross(ip_normal,up_vector)));
+  ip_yaxis = cross(ip_xaxis, ip_normal);
+  fov = 2 * atan(1.0 / cam_const); //field of view
 }
 
 /// Get direction of viewing ray from image coords.
 float3 Camera::get_ray_dir(const float2& coords) const
 {
   // Given the image plane coordinates, compute the normalized ray
-  // direction by a change of basis.
-  return make_float3(0.0f);
+  // direction by a change of basis. THIS Might not be done correctly
+  return make_float3(((2*(coords.x+0.5))/1)-1,(2*(coords.y+0.5)/1)-1,cam_const);
 }
 
 /// Return the ray corresponding to a set of image coords
@@ -56,8 +70,8 @@ Ray Camera::get_ray(const float2& coords) const
   // by the image plane coordinates received as argument.
   //
   // Hint: You can set the ray type to 0 as the framework currently
-  //       does not use different ray types.
-  return Ray(); 
+  //       does not use different ray types.d
+  return Ray(make_float3(coords,0.0),get_ray_dir(coords),0,0.0,0.0); //This is probaly not right
 }
 
 // OpenGL
