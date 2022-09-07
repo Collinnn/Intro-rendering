@@ -40,7 +40,7 @@ void Camera::set(const float3& eye_point, const float3& view_point, const float3
   //            get with the default scene (if you set a breakpoint and run   
   //            in Debug mode, you can use it to check your code).            
   
-  double const height = 1.0 , const width = 1.0;
+  float const height = 1.0 , const width = 1.0;
 
   //These does nothing with the height, width at 1. However it's nice to know 
   //ip_xaxis = (ip_xaxis + 0.5)*(1.0/height) - (0.5 * (width / height));      
@@ -48,10 +48,11 @@ void Camera::set(const float3& eye_point, const float3& view_point, const float3
   ////////////////////////////////////////////////////////////////////////////
   
   //Change of basis matrix
-  ip_normal = (lookat - eye) / normalize(lookat - eye);
-  ip_xaxis = cross(ip_normal, up)/(normalize(cross(ip_normal,up_vector)));
+  ip_normal = normalize(lookat - eye);
+  ip_xaxis = (normalize(cross(ip_normal,up_vector)));
   ip_yaxis = cross(ip_xaxis, ip_normal);
-  fov = 2 * atan(1.0 / cam_const); //field of view
+  float temp = 2.0 * atan(1.0 / (2*cam_const)); //field of view
+  fov = M_1_PIf * 180 * temp;
 }
 
 /// Get direction of viewing ray from image coords.
@@ -59,7 +60,9 @@ float3 Camera::get_ray_dir(const float2& coords) const
 {
   // Given the image plane coordinates, compute the normalized ray
   // direction by a change of basis. THIS Might not be done correctly
-  return make_float3(((2*(coords.x+0.5))/1)-1,(2*(coords.y+0.5)/1)-1,cam_const);
+	float3 q = ip_xaxis * coords.x + ip_yaxis * coords.y + ip_normal * cam_const;
+	float3 omega = normalize(q);
+    return omega;
 }
 
 /// Return the ray corresponding to a set of image coords
@@ -71,7 +74,7 @@ Ray Camera::get_ray(const float2& coords) const
   //
   // Hint: You can set the ray type to 0 as the framework currently
   //       does not use different ray types.d
-  return Ray(make_float3(coords,0.0),get_ray_dir(coords),0,0.0,0.0); //This is probaly not right
+  return Ray(eye,get_ray_dir(coords),0,0); 
 }
 
 // OpenGL
