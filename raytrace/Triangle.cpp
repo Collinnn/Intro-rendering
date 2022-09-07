@@ -53,7 +53,17 @@ bool Triangle::intersect(const Ray& r, HitInfo& hit, unsigned int prim_idx) cons
   //       Note that you need to do scope resolution (optix:: or just :: in front
   //       of the function name) to choose between the OptiX implementation and
   //       the function just above this one.
-
+    const float3 e0 = v1 - v0;
+    const float3 e1 = v2 - v0;
+    const float3 a = v0 - r.origin;
+    const float3 n = cross(e0, e1);
+    const float3 crossed = cross(a, r.direction);
+    const float dotproduct = dot(r.direction, n);
+    if (abs(dotproduct) > 0.001) {
+        const float beta  = (crossed * e1) / dotproduct;
+        const float gamma = (crossed * e0) / dotproduct;
+    }
+    
   return false;
 }
 
