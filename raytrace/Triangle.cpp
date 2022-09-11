@@ -21,8 +21,36 @@ bool intersect_triangle(const Ray& ray,
   // Note that OptiX also has an implementation, so you can get away
   // with not implementing this function. However, I recommend that
   // you implement it for completeness.
+    
+    //vectors from v0
+    float3 e0 = v1 - v0;
+    float3 e1 = v2 - v0;
 
-  return false;
+    //Normal of the face
+    n = cross(e0, e1);
+    
+    //Ray-plance intersection
+    float q = dot(ray.direction, n);
+
+
+    if (fabsf(q) < 1.0e-8f) return false;
+    q = 1.0f / q;
+    float3 a = v0 - ray.origin;
+    t = dot(a, n) * q;
+
+
+    //Check of intersection distance
+    if (t > ray.tmax || t < ray.tmin) return false;
+    
+    const float3 crossed = cross(a, ray.direction);
+    //Checks on gamma, beta and alpha
+    beta = dot(crossed, e1) * q;
+    if (beta < 0.0f) return false;
+
+    gamma = -dot(crossed, e0) * q;
+    if (gamma < 0.0f || beta + gamma >1.0f) return false;
+
+  return true;
 }
 
 
@@ -53,16 +81,20 @@ bool Triangle::intersect(const Ray& r, HitInfo& hit, unsigned int prim_idx) cons
   //       Note that you need to do scope resolution (optix:: or just :: in front
   //       of the function name) to choose between the OptiX implementation and
   //       the function just above this one.
-    const float3 e0 = v1 - v0;
-    const float3 e1 = v2 - v0;
-    const float3 a = v0 - r.origin;
-    const float3 n = cross(e0, e1);
-    const float3 crossed = cross(a, r.direction);
-    const float dotproduct = dot(r.direction, n);
-    if (abs(dotproduct) > 0.001) {
-        const float beta  = (crossed * e1) / dotproduct;
-        const float gamma = (crossed * e0) / dotproduct;
+
+    float3 n; 
+    float t, beta, gamma;
+    if (::intersect_triangle(r, v0, v1, v2,n,t,beta,gamma)) {
+        hit.has_hit = true;
+        hit.position = r.origin + hit.dist * r.direction;
+        const float3 normalized = normalize(n);
+        hit.geometric_normal = normalized;
+        hit.shading_normal = normalized;
+        hit.material = &material;
+        return true;
+
     }
+ 
     
   return false;
 }

@@ -37,8 +37,26 @@ bool Sphere::intersect(const Ray& r, HitInfo& hit, unsigned int prim_idx) const
   // Hints: (a) The square root function is called sqrt(x).
   //        (b) There is no need to handle the case where the 
   //            discriminant is zero separately.
+	float3 orio_to_center = r.origin - center;
+	float b = dot(orio_to_center, r.direction);
+	float c = dot(orio_to_center, orio_to_center) - (radius*radius);
+	
+	//intersection points t1,t2
+	float d = (b * b)-c;
+	if (d) return false;
+	float t1 = -b - sqrt(d - c);
+	float t2 = -b + sqrt(d - c);
+	if (t1 <= r.tmax && t1 >= r.tmin && t2 <= r.tmax && t2 >= r.tmin) {
+		hit.has_hit = true;
+		hit.position = r.origin + hit.dist * r.direction;
+		//const float3 normalized = normalize(onb.m_normal);
+		//hit.geometric_normal = normalized;
+		//hit.shading_normal = normalized;
+		hit.material = &material;
+		return true;
+	}
 
-  return false;
+	return true;
 }
 
 void Sphere::transform(const Matrix4x4& m)

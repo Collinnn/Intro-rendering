@@ -39,9 +39,9 @@ bool Plane::intersect(const Ray& r, HitInfo& hit, unsigned int prim_idx) const
   //
   // Hint: The OptiX math library has a function dot(v, w) which returns
   //       the dot product of the vectors v and w.
-	const float dotproduct = dot(r.direction, onb.m_normal);
-	if (abs(dotproduct) > 0.0001) {
-		const float dist = hit.dist = -(dot(r.origin, onb.m_normal) + d) / dotproduct;
+	const float q = dot(r.direction, onb.m_normal);
+	if (fabsf(q) > 1.0e-8f) {
+		const float dist = hit.dist = -(dot(r.origin, onb.m_normal) + d) / q;
 		if (dist<=r.tmax &&dist>=r.tmin) {
 			hit.has_hit = true;
 			hit.position = r.origin + hit.dist * r.direction;
@@ -49,7 +49,7 @@ bool Plane::intersect(const Ray& r, HitInfo& hit, unsigned int prim_idx) const
 			hit.geometric_normal = normalized;
 			hit.shading_normal = normalized;
 			hit.material = &material;
-			return hit.has_hit;
+			return true;
 		}
 
 	}
