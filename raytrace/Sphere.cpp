@@ -49,9 +49,8 @@ bool Sphere::intersect(const Ray& r, HitInfo& hit, unsigned int prim_idx) const
 	if (t1 <= r.tmax && t1 >= r.tmin && t2 <= r.tmax && t2 >= r.tmin) {
 		hit.has_hit = true;
 		hit.position = r.origin + hit.dist * r.direction;
-		//const float3 normalized = normalize(onb.m_normal);
-		//hit.geometric_normal = normalized;
-		//hit.shading_normal = normalized;
+		hit.geometric_normal = normalize(hit.position - center);
+		hit.shading_normal = hit.geometric_normal;
 		hit.material = &material;
 		return true;
 	}
