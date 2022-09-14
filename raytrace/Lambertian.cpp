@@ -17,6 +17,10 @@ float3 Lambertian::shade(const Ray& r, HitInfo& hit, bool emit) const
 {
   float3 rho_d = get_diffuse(hit);
   float3 result = make_float3(0.0f);
+  float3 L;
+  float3 dir;
+
+  
   
   // Implement Lambertian reflection here.
   //
@@ -34,5 +38,18 @@ float3 Lambertian::shade(const Ray& r, HitInfo& hit, bool emit) const
   //
   // Hint: Call the sample function associated with each light in the scene.
 
+  for each (Light* const light in lights)
+  {
+	  float3 acc = make_float3(0.0);
+	  for (int i = 0; i < light->get_no_of_samples(); i++) {
+		  if (light->sample(hit.position, dir, L)) {
+			  acc += L * max(dot(dir, hit.shading_normal), 1);
+		  }
+
+	  }
+	  result += acc / light->get_no_of_samples();
+	  
+  }
+  result = rho_d * M_1_PIf * result;
   return result + Emission::shade(r, hit, emit);
 }

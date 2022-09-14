@@ -40,22 +40,32 @@ bool Sphere::intersect(const Ray& r, HitInfo& hit, unsigned int prim_idx) const
 	float3 orio_to_center = r.origin - center;
 	float b = dot(orio_to_center, r.direction);
 	float c = dot(orio_to_center, orio_to_center) - (radius*radius);
-	
+	float t;
+	//std::cout << "text string" << std::endl;
 	//intersection points t1,t2
 	float d = (b * b)-c;
-	if (d) return false;
+	if (d<0) return false;
 	float t1 = -b - sqrt(d - c);
 	float t2 = -b + sqrt(d - c);
-	if (t1 <= r.tmax && t1 >= r.tmin && t2 <= r.tmax && t2 >= r.tmin) {
-		hit.has_hit = true;
-		hit.position = r.origin + hit.dist * r.direction;
-		hit.geometric_normal = normalize(hit.position - center);
-		hit.shading_normal = hit.geometric_normal;
-		hit.material = &material;
-		return true;
-	}
 
+	if (t1 >= r.tmax && t1 <= r.tmin) {
+		if (t2 <= r.tmax && t2 >= r.tmin) {
+			return false;
+		}
+		t = t2;
+	}
+	else t = t1;
+
+	
+	hit.has_hit = true;
+	hit.position = r.origin + hit.dist * r.direction;
+	hit.geometric_normal = normalize(hit.position - center);
+	hit.shading_normal = hit.geometric_normal;
+	hit.material = &material;
 	return true;
+	
+
+	return false;
 }
 
 void Sphere::transform(const Matrix4x4& m)
