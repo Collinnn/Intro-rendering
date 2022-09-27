@@ -44,6 +44,7 @@ bool Plane::intersect(const Ray& r, HitInfo& hit, unsigned int prim_idx) const
 		const float dist = hit.dist = -(dot(r.origin, onb.m_normal) + d) / q;
 		if (dist<=r.tmax &&dist>=r.tmin) {
 			hit.has_hit = true;
+			hit.dist = dist;
 			hit.position = r.origin + hit.dist * r.direction;
 			const float3 normalized = normalize(onb.m_normal);
 			hit.geometric_normal = normalized;

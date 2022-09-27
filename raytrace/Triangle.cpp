@@ -86,6 +86,7 @@ bool Triangle::intersect(const Ray& r, HitInfo& hit, unsigned int prim_idx) cons
     float t, beta, gamma;
     if (::intersect_triangle(r, v0, v1, v2,n,t,beta,gamma)) {
         hit.has_hit = true;
+        hit.dist = t; 
         hit.position = r.origin + hit.dist * r.direction;
         const float3 normalized = normalize(n);
         hit.geometric_normal = normalized;

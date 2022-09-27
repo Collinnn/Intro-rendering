@@ -45,11 +45,11 @@ bool Sphere::intersect(const Ray& r, HitInfo& hit, unsigned int prim_idx) const
 	//intersection points t1,t2
 	float d = (b * b)-c;
 	if (d<0) return false;
-	float t1 = -b - sqrt(d - c);
-	float t2 = -b + sqrt(d - c);
+	float t1 = -b - sqrt(d);
+	float t2 = -b + sqrt(d);
 
-	if (t1 >= r.tmax && t1 <= r.tmin) {
-		if (t2 <= r.tmax && t2 >= r.tmin) {
+	if (t1 >= r.tmax || t1 < r.tmin) {
+		if (t2 >= r.tmax || t2 < r.tmin) {
 			return false;
 		}
 		t = t2;
@@ -58,6 +58,7 @@ bool Sphere::intersect(const Ray& r, HitInfo& hit, unsigned int prim_idx) const
 
 	
 	hit.has_hit = true;
+	hit.dist = t; 
 	hit.position = r.origin + hit.dist * r.direction;
 	hit.geometric_normal = normalize(hit.position - center);
 	hit.shading_normal = hit.geometric_normal;
