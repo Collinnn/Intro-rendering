@@ -35,17 +35,11 @@ void Accelerator::init(const vector<Object3D*>& geometry, const vector<const Pla
 bool Accelerator::closest_hit(optix::Ray& r, HitInfo& hit) const
 {
     closest_plane(r, hit);
-    HitInfo hit_temp;
-    hit_temp.dist = r.tmax + 1;
-    if (hit.dist < hit_temp.dist) {
-        hit_temp.dist = hit.dist;
-    }
+
     for (int i = 0; i < primitives.size(); ++i) {
         AccObj* obj = primitives[i];
         if (obj->geometry->intersect(r, hit, obj->prim_idx)) {
-            if (hit.dist < hit_temp.dist) {
-                hit_temp.dist = hit.dist;
-            }
+            r.tmax = hit.dist;
         }
     }
  
