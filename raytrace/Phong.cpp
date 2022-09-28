@@ -11,6 +11,9 @@ using namespace optix;
 #ifndef M_1_PIf
 #define M_1_PIf 0.31830988618379067154
 #endif
+#ifndef M_1_PIf2 
+#define M_1_PIf2 0.1591549431
+#endif
 
 float3 Phong::shade(const Ray& r, HitInfo& hit, bool emit) const
 {
@@ -36,5 +39,27 @@ float3 Phong::shade(const Ray& r, HitInfo& hit, bool emit) const
   //
   // Hint: Call the sample function associated with each light in the scene.
 
-  return Lambertian::shade(r, hit, emit);
+  float3 dir = r.origin - hit.position;
+  float3 L,omegai,omegar;
+  float3 Lr = make_float3(0.0f);
+  float3 sum = make_float3(0.0f);
+  for (int i = 0; i < lights.size(); i++) { 
+	  
+	  for (int j = 0; j < lights[i]->get_no_of_samples(); j++) {
+		  if (lights[i]->sample(hit.position,dir, L)) {
+			  float costheta = dot(hit.shading_normal, dir);
+			  if (costheta > 0.0f) {
+				  omegar = reflect(-dir, hit.shading_normal);
+				  omegai = normalize(dir);
+				  Lr += (rho_d * M_1_PIf) + rho_s * (s + 2) * (M_1_PIf2)*pow(dot(-r.direction, omegar), s) * L * dot(omegai, hit.shading_normal);
+			  }
+
+
+		  }
+	  }
+	  sum += Lr / lights[i]->get_no_of_samples();
+  }
+
+  
+  return sum + Lambertian::shade(r, hit, emit);
 }

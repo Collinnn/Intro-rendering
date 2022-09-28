@@ -58,6 +58,7 @@ float4 Texture::sample_nearest(const float3& texcoord) const
   //
   // Hint: Remember to revert the vertical axis when finding the index
   //       into fdata.
+ 
 
   return make_float4(0.0f);
 }
@@ -81,6 +82,14 @@ float4 Texture::sample_linear(const float3& texcoord) const
   //
   // Hint: Use three lerp operations (or one bilerp) to perform the
   //       bilinear interpolation.
+  float s = texcoord.x - floor(texcoord.x);
+  float t = texcoord.y - floor(texcoord.y);
+  float a = s * width;
+  float b = t * height;
+  int U = int(a + 0.5) % width;
+  int V = int(b + 0.5) % height;
+  int i = U + V * width;
+
 
   return sample_nearest(texcoord);
 }

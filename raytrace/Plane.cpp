@@ -40,9 +40,15 @@ bool Plane::intersect(const Ray& r, HitInfo& hit, unsigned int prim_idx) const
   // Hint: The OptiX math library has a function dot(v, w) which returns
   //       the dot product of the vectors v and w.
 	const float q = dot(r.direction, onb.m_normal);
+	float u, v;
 	if (fabsf(q) > 1.0e-8f) {
 		const float dist = hit.dist = -(dot(r.origin, onb.m_normal) + d) / q;
 		if (dist<=r.tmax &&dist>=r.tmin) {
+			if (material.has_texture) {
+				get_uv(hit.position, u, v);
+				hit.texcoord.x = u;
+				hit.texcoord.y = v; 
+			}
 			hit.has_hit = true;
 			hit.dist = dist;
 			hit.position = r.origin + hit.dist * r.direction;
@@ -82,7 +88,10 @@ void Plane::get_uv(const float3& hit_pos, float& u, float& v) const
   // position           (origin of the plane)
   // onb                (orthonormal basis of the plane: normal [n], tangent [b1], binormal [b2])
   // tex_scale          (constant for scaling the texture coordinates)
-
-  u = 0.0f;
-  v = 0.0f;
-}
+	float3 orToPos = position - hit_pos;
+	
+  u = dot(orToPos,onb.m_tangent);
+  v = dot(orToPos,onb.m_binormal);
+  u = u * tex_scale;
+  v = v * tex_scale;
+} 

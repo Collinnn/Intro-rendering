@@ -28,12 +28,13 @@ bool RayTracer::trace_reflected(const Ray& in, const HitInfo& in_hit, Ray& out, 
 	float3 dir = in.origin - in_hit.position;
 	float3 normaldir = normalize(dir);
 	float3 materialNormal = normalize(in_hit.geometric_normal);
-	out.direction = 2 * (dot(normaldir,materialNormal)) * materialNormal - normaldir;
+	out = make_Ray(in_hit.position, reflect(in.direction, in_hit.shading_normal), 0, 1e-4f, RT_DEFAULT_MAX);
+	//out.direction = 2 * (dot(normaldir,materialNormal)) * materialNormal - normaldir;
 	out_hit.trace_depth = in_hit.trace_depth + 1;
 	out_hit.ray_ior = in_hit.ray_ior;
-	out.origin = in_hit.position;
-	out.tmin = 1e-4f;
-	out.tmax= RT_DEFAULT_MAX;
+	//out.origin = in_hit.position;
+	//out.tmin = 1e-4f;
+	//out.tmax= RT_DEFAULT_MAX;
   return trace_to_closest(out,out_hit);
 }
 
@@ -62,7 +63,8 @@ bool RayTracer::trace_refracted(const Ray& in, const HitInfo& in_hit, Ray& out, 
 	float ior = in_hit.ray_ior / out_ior;
 	float cos2thetat = (1 - (ior * ior) * (1 - (angle * angle)));
 	
-	if (0 > cos2thetat)  return false;
+	//if (0 > cos2thetat)  return false;
+	if (!refract(out.direction, in.direction, normaldir, out_hit.ray_ior / in_hit.ray_ior)) return false;
 	out.direction = ior * ((angle)*materialNormal - normaldir) - materialNormal * sqrtf(cos2thetat);
 	refract(out.direction, in.direction, materialNormal, 1 / ior);
 	out_hit.trace_depth = in_hit.trace_depth + 1;

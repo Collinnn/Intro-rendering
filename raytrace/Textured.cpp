@@ -18,11 +18,14 @@ float3 Textured::get_emission(const HitInfo& hit) const
   const ObjMaterial* m = hit.material;
   if(m)
   {
+    //Finds the amount it emits in the 3 color spaces
     float3 emission = make_float3(m->ambient[0], m->ambient[1], m->ambient[2]);
     const Texture* tex = m->has_texture ? (*texs)[m->tex_name] : 0;
+    //Checks if the tex has a texture and exists.
     if(tex && tex->has_texture())
     {
       float3 reduced_emission;
+      //Reduced emission, takes the incoming light and reduceses it. So the next bounch aint as strong in all 3 base colors.
       reduced_emission.x = m->diffuse[0] > 0.0f ? emission.x/m->diffuse[0] : 0.0f;
       reduced_emission.y = m->diffuse[1] > 0.0f ? emission.y/m->diffuse[1] : 0.0f;
       reduced_emission.z = m->diffuse[2] > 0.0f ? emission.z/m->diffuse[2] : 0.0f;
@@ -35,6 +38,7 @@ float3 Textured::get_emission(const HitInfo& hit) const
 
 float3 Textured::get_diffuse(const HitInfo& hit) const
 {
+  //Get's amount of deffusion on given texture
   if(!texs)
     return Reflectance::get_diffuse(hit);
 
