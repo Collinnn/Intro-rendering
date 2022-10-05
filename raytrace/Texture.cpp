@@ -56,11 +56,18 @@ float4 Texture::sample_nearest(const float3& texcoord) const
   // fdata                 (flat array of texture data: texel colors in float4 format)
   // width, height         (texture resolution)
   //
-  // Hint: Remember to revert the vertical axis when finding the index
+  // Hint: Remember to revert the vertical axis when finding the index 
   //       into fdata.
- 
+  float s = texcoord.x - floor(texcoord.x);
+  float t = texcoord.y - floor(texcoord.y);
+  float a = s * width;
+  float b = t * height;
+  unsigned int U = (int)(a + 0.5) % width;
+  unsigned int V = (height - (int)(b + 0.5) + 1) % height;
+  unsigned int i = U + (V * width);
 
-  return make_float4(0.0f);
+
+  return fdata[i];
 }
 
 float4 Texture::sample_linear(const float3& texcoord) const
@@ -83,15 +90,17 @@ float4 Texture::sample_linear(const float3& texcoord) const
   // Hint: Use three lerp operations (or one bilerp) to perform the
   //       bilinear interpolation.
   float s = texcoord.x - floor(texcoord.x);
-  float t = texcoord.y - floor(texcoord.y);
+  float t = (-texcoord.y - floor(-texcoord.y));
   float a = s * width;
   float b = t * height;
-  int U = int(a + 0.5) % width;
-  int V = int(b + 0.5) % height;
-  int i = U + V * width;
+  unsigned int U = (int)a;
+  unsigned int V = (int)b;
+  unsigned int u1 = (U + 1)%width;
+  unsigned int v1 = (V + 1)%height;
 
+ 
 
-  return sample_nearest(texcoord);
+  return  bilerp(fdata[U + V * width], fdata[u1 + V * width], fdata[U + v1 * (width)], fdata[u1 + v1 * width], a - U, b - V);
 }
 
 float4 Texture::look_up(unsigned int idx) const

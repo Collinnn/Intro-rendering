@@ -51,10 +51,8 @@ float3 Phong::shade(const Ray& r, HitInfo& hit, bool emit) const
 			  if (costheta > 0.0f) {
 				  omegar = reflect(-dir, hit.shading_normal);
 				  omegai = normalize(dir);
-				  Lr += (rho_d * M_1_PIf) + rho_s * (s + 2) * (M_1_PIf2)*pow(dot(-r.direction, omegar), s) * L * dot(omegai, hit.shading_normal);
+				  Lr += (rho_d * M_1_PIf) + rho_s * (s + 2) * (M_1_PIf2)*pow(fmax(dot(-r.direction, omegar), 0.f), s) * L * dot(omegai, hit.shading_normal);
 			  }
-
-
 		  }
 	  }
 	  sum += Lr / lights[i]->get_no_of_samples();
