@@ -99,8 +99,8 @@ float4 Texture::sample_linear(const float3& texcoord) const
   unsigned int v1 = (V + 1)%height;
 
  
-
-  return  bilerp(fdata[U + V * width], fdata[u1 + V * width], fdata[U + v1 * (width)], fdata[u1 + v1 * width], a - U, b - V);
+  //return sample_nearest(texcoord);
+  return bilerp(fdata[U + V * width], fdata[u1 + V * width], fdata[U + v1 * (width)], fdata[u1 + v1 * width], a - U, b - V);
 }
 
 float4 Texture::look_up(unsigned int idx) const
