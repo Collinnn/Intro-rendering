@@ -1,3 +1,4 @@
 ﻿cl : command line  warning D9035: option 'Gm' has been deprecated and will be removed in a future release
-  Texture.cpp
+  AreaLight.cpp
+C:\Users\Tobias Collin\Documents\GitHub\Intro-rendering\raytrace\AreaLight.cpp(50,21): warning C4018: '<': signed/unsigned mismatch
   raytrace.vcxproj -> C:\Users\Tobias Collin\Documents\GitHub\Intro-rendering\Debug\raytrace.exe

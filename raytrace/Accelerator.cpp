@@ -37,9 +37,11 @@ bool Accelerator::closest_hit(optix::Ray& r, HitInfo& hit) const
     closest_plane(r, hit);
 
     for (int i = 0; i < primitives.size(); ++i) {
+
         AccObj* obj = primitives[i];
         if (obj->geometry->intersect(r, hit, obj->prim_idx)) {
             r.tmax = hit.dist;
+            hit.has_hit = true;
         }
     }
  

@@ -55,8 +55,8 @@ bool TriMesh::intersect(const Ray& r, HitInfo& hit, unsigned int prim_idx) const
 
     //Vertex triangle coordinates 
     float3 geometric_normal; 
-    float t, alpha = 0.0f, beta = 0.0f, gamma = 0.0f; 
-    const bool is_hit = ::intersect_triangle(r, geometry.vertex(face.x), geometry.vertex(face.y), geometry.vertex(face.z),geometric_normal, t, beta, gamma);
+    float t, alpha, beta, gamma ; 
+    bool is_hit = ::intersect_triangle(r, geometry.vertex(face.x), geometry.vertex(face.y), geometry.vertex(face.z),geometric_normal, t, beta, gamma);
     
     if (is_hit) {
         hit.dist = t;
@@ -69,18 +69,14 @@ bool TriMesh::intersect(const Ray& r, HitInfo& hit, unsigned int prim_idx) const
         hit.geometric_normal = normalize(geometric_normal);
 
         //If the specific triangle has normals
-        hit.shading_normal = hit.geometric_normal;
-
-        if (texcoords.no_vertices() > 3) {
-            try {
-                float3 t1 = texcoords.vertex(face.x) * alpha;
-                float3 t2 = texcoords.vertex(face.y) * beta;
-                float3 t3 = texcoords.vertex(face.z) * gamma;
-                hit.texcoord = (t1 + t2 + t3);
-            }
-            catch (const std::exception& err) {//if no texcord for all 3 verts
-                printf("Cordinate error at %c\n", err.what());
-            }
+        if (has_normals()) {
+            float3 t1 = normals.vertex(face.x) * alpha;
+            float3 t2 = normals.vertex(face.y) * beta;
+            float3 t3 = normals.vertex(face.z) * gamma;
+            hit.shading_normal = (normalize(t1 + t2 + t3));
+        }
+        else {
+            hit.shading_normal = hit.geometric_normal;
         }
     }
 

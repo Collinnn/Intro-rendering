@@ -38,7 +38,26 @@ bool AreaLight::sample(const float3& pos, float3& dir, float3& L) const
   //        (b) Use the function get_emission(...) to get the radiance
   //        emitted by a triangle in the mesh.
 
-  return false;  
+  const float3 center = mesh->compute_bbox().center();
+  const float3 centerpos = (center - pos);
+  const float distance = sqrt(((centerpos.x*centerpos.x) +(centerpos.y* centerpos.y) + (centerpos.z*centerpos.z)));
+  dir = normalize(centerpos);
+
+  //calc intensity of light
+  float3 intensity;
+  float3 trinormal;
+  uint3 face;
+  for (int i = 0; i < mesh->geometry.no_faces(); i++) {
+	  face = normals.face(i);
+	  trinormal = normalize(normals.vertex(face.x) + normals.vertex(face.y)+normals.vertex(face.z));
+	  intensity += dot(-dir, trinormal) * get_emission(i) * mesh->face_areas.at(i);
+  }
+  L = intensity / (distance*distance);
+  float offset = 0.001f;
+  HitInfo hit = HitInfo();
+  Ray ray = Ray(pos, dir, 0, offset, distance - offset);
+  tracer->trace_to_closest(ray, hit);
+  return !(shadows && hit.has_hit);
 }
 
 bool AreaLight::emit(Ray& r, HitInfo& hit, float3& Phi) const
@@ -62,11 +81,10 @@ bool AreaLight::emit(Ray& r, HitInfo& hit, float3& Phi) const
 
   // Get geometry info
   const IndexedFaceSet& geometry = mesh->geometry;
-	const IndexedFaceSet& normals = mesh->normals;
-	const float no_of_faces = static_cast<float>(geometry.no_faces());
-
+  const IndexedFaceSet& normals = mesh->normals;
+  const float no_of_faces = static_cast<float>(geometry.no_faces());
   // Sample ray origin and direction
- 
+
   // Trace ray
   
   // If a surface was hit, compute Phi and return true
