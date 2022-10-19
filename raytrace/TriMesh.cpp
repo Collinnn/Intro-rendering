@@ -20,40 +20,71 @@ using namespace optix;
 
 bool TriMesh::intersect(const Ray& r, HitInfo& hit, unsigned int prim_idx) const
 {
-  const uint3& face = geometry.face(prim_idx);
+    const uint3& face = geometry.face(prim_idx);
 
-  // Implement ray-triangle intersection here.
-  //
-  // Input:  r                    (the ray to be checked for intersection)
-  //         prim_idx             (index of the triangle to be tested for intersection)
-  //
-  // Output: hit.has_hit          (set true if the ray intersects the triangle)
-  //         hit.dist             (distance from the ray origin to the intersection point)
-  //         hit.geometric_normal (the normalized normal of the triangle)
-  //         hit.shading_normal   (the normalized normal of the triangle)
-  //         hit.material         (pointer to the material of the triangle)
-  //        (hit.texcoord)        (texture coordinates of intersection point)
-  //
-  // Return: True if the ray intersects the triangle, false otherwise
-  //
-  // Relevant data fields that are available (see TriMesh.h and above)
-  // r                            (the ray)
-  // face                         (triangle vertex indices)
-  // geometry                     (indexed face set containing vertex positions)
-  // normals                      (indexed face set containing vertex normals)
-  // texcoords                    (indexed face set containing vertex texture coordinates)
-  // mat_idx                      (array containing material index for each triangle)
-  // materials                    (array of materials)
-  //
-  // Hints: (a) Use the function intersect_triangle(...) to get the hit info.
-  //        (b) Use the barycentric coordinates of the intersection point
-  //        to interpolate the normal (and texture coordinates, if needed)
-  //        linearly across the triangle.
-  //        (c) Use the function has_normals() to check if the mesh has
-  //        vertex normals for computing the shading normal. If not, use
-  //        the geometric normal as shading normal.
+    // Implement ray-triangle intersection here.
+    //
+    // Input:  r                    (the ray to be checked for intersection)
+    //         prim_idx             (index of the triangle to be tested for intersection)
+    //
+    // Output: hit.has_hit          (set true if the ray intersects the triangle)
+    //         hit.dist             (distance from the ray origin to the intersection point)
+    //         hit.geometric_normal (the normalized normal of the triangle)
+    //         hit.shading_normal   (the normalized normal of the triangle)
+    //         hit.material         (pointer to the material of the triangle)
+    //        (hit.texcoord)        (texture coordinates of intersection point)
+    //
+    // Return: True if the ray intersects the triangle, false otherwise
+    //
+    // Relevant data fields that are available (see TriMesh.h and above)
+    // r                            (the ray)
+    // face                         (triangle vertex indices)
+    // geometry                     (indexed face set containing vertex positions)
+    // normals                      (indexed face set containing vertex normals)
+    // texcoords                    (indexed face set containing vertex texture coordinates)
+    // mat_idx                      (array containing material index for each triangle)
+    // materials                    (array of materials)
+    //
+    // Hints: (a) Use the function intersect_triangle(...) to get the hit info.
+    //        (b) Use the barycentric coordinates of the intersection point
+    //        to interpolate the normal (and texture coordinates, if needed)
+    //        linearly across the triangle.
+    //        (c) Use the function has_normals() to check if the mesh has
+    //        vertex normals for computing the shading normal. If not, use
+    //        the geometric normal as shading normal.
 
-  return false;
+    //Vertex triangle coordinates 
+    float3 geometric_normal; 
+    float t, alpha = 0.0f, beta = 0.0f, gamma = 0.0f; 
+    const bool is_hit = ::intersect_triangle(r, geometry.vertex(face.x), geometry.vertex(face.y), geometry.vertex(face.z),geometric_normal, t, beta, gamma);
+    
+    if (is_hit) {
+        hit.dist = t;
+        hit.has_hit = is_hit;
+        hit.material = &(materials.at(mat_idx.at(prim_idx)));
+        hit.position = r.origin + r.direction * t;
+
+        //Interpolate normals & texcoords.
+        alpha = 1.0f - beta - gamma;
+        hit.geometric_normal = normalize(geometric_normal);
+
+        //If the specific triangle has normals
+        hit.shading_normal = hit.geometric_normal;
+
+        if (texcoords.no_vertices() > 3) {
+            try {
+                float3 t1 = texcoords.vertex(face.x) * alpha;
+                float3 t2 = texcoords.vertex(face.y) * beta;
+                float3 t3 = texcoords.vertex(face.z) * gamma;
+                hit.texcoord = (t1 + t2 + t3);
+            }
+            catch (const std::exception& err) {//if no texcord for all 3 verts
+                printf("Cordinate error at %c\n", err.what());
+            }
+        }
+    }
+
+  return is_hit;
 }
 
 void TriMesh::transform(const Matrix4x4& m)

@@ -63,7 +63,10 @@ float4 Texture::sample_nearest(const float3& texcoord) const
   float a = s * width;
   float b = t * height;
   unsigned int U = (int)(a + 0.5) % width;
-  unsigned int V = (height - (int)(b + 0.5) + 1) % height;
+  unsigned int V = (int)(b + 0.5) % height;
+  //Reverse dir
+  V = (height - 1) - V;
+
   unsigned int i = U + (V * width);
 
 

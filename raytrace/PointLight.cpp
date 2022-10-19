@@ -33,7 +33,7 @@ bool PointLight::sample(const float3& pos, float3& dir, float3& L) const
 	dir = light_pos - pos;
 	L=intensity / dot(dir, dir);
 	dir = normalize(dir);
-	Ray shadow = make_Ray(pos, dir, 0, 1e-4, RT_DEFAULT_MAX);
+	Ray shadow = make_Ray(pos, dir, 0, 1e-4f, RT_DEFAULT_MAX);
 	if (tracer->trace_to_closest(shadow, hit)) {
 		L = make_float3(0.0f);
 		return false;
