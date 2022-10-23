@@ -36,18 +36,19 @@ bool intersect_triangle(const Ray& ray,
     if (fabsf(q) < 1.0e-8f) return false;
     q = 1.0f / q;
     float3 a = v0 - ray.origin;
-    t = dot(a, n) * q;
+    t = dot((v0 - ray.origin), n) / dot(ray.direction, n);
 
+   
 
     //Check of intersection distance
     if (t > ray.tmax || t < ray.tmin) return false;
     
     const float3 crossed = cross(a, ray.direction);
     //Checks on gamma, beta and alpha
-    beta = dot(crossed, e1) * q;
+    beta = dot(cross(v0 - ray.origin, ray.direction), e1) / dot(ray.direction, n);
     if (beta < 0.0f) return false;
 
-    gamma = -dot(crossed, e0) * q;
+    gamma = -(dot(cross(v0 - ray.origin, ray.direction), e0) / dot(ray.direction, n));
     if (gamma < 0.0f || beta + gamma >1.0f) return false;
 
   return true;
