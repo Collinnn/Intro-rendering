@@ -67,12 +67,12 @@ bool TriMesh::intersect(const Ray& r, HitInfo& hit, unsigned int prim_idx) const
         //Interpolate normals & texcoords.
         alpha = 1.0f - beta - gamma;
         hit.geometric_normal = normalize(geometric_normal);
-
+        const uint3& face_n = normals.face(prim_idx);
         //If the specific triangle has normals
         if (has_normals()) {
-            float3 t1 = normals.vertex(face.x) * alpha;
-            float3 t2 = normals.vertex(face.y) * beta;
-            float3 t3 = normals.vertex(face.z) * gamma;
+            float3 t1 = normals.vertex(face_n.x) * alpha;
+            float3 t2 = normals.vertex(face_n.y) * beta;
+            float3 t3 = normals.vertex(face_n.z) * gamma;
             hit.shading_normal = (normalize(t1 + t2 + t3));
         }
         else {

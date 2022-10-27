@@ -37,13 +37,11 @@ float3 Lambertian::shade(const Ray& r, HitInfo& hit, bool emit) const
   // rho_d              (difuse reflectance of the material)
   //
   // Hint: Call the sample function associated with each light in the scene.
-
-  for each (Light* const light in lights)
-  {
+  for each (Light* const light in lights){
 	  float3 acc = make_float3(0.0);
 	  for (int i = 0; i < light->get_no_of_samples(); i++) {
 		  if (light->sample(hit.position, dir, L)) {
-			  acc += L * max(dot(dir, hit.shading_normal), 1);
+			  acc += L* fmaxf(dot(dir, hit.shading_normal), 0);
 		  }
 
 	  }

@@ -38,25 +38,23 @@ bool AreaLight::sample(const float3& pos, float3& dir, float3& L) const
   //        (b) Use the function get_emission(...) to get the radiance
   //        emitted by a triangle in the mesh.
 
-  const float3 center = mesh->compute_bbox().center();
-  const float3 centerpos = (center - pos);
-  const float distance = sqrt(((centerpos.x*centerpos.x) +(centerpos.y* centerpos.y) + (centerpos.z*centerpos.z)));
+  const float3& center = mesh->compute_bbox().center();
+  const float3& centerpos = (center - pos);
+  const float distance = sqrt((centerpos.x*centerpos.x) +(centerpos.y* centerpos.y) + (centerpos.z*centerpos.z));
   dir = normalize(centerpos);
 
   //calc intensity of light
-  float3 intensity;
+  float3 intensity = make_float3(0.0);
   float3 trinormal;
-  uint3 face;
   for (int i = 0; i < mesh->geometry.no_faces(); i++) {
-	  face = normals.face(i);
+	  const uint3& face = normals.face(i);
 	  trinormal = normalize(normals.vertex(face.x) + normals.vertex(face.y)+normals.vertex(face.z));
-	  intensity += dot(-dir, trinormal) * get_emission(i) * mesh->face_areas.at(i);
+	  intensity += fmaxf(dot(-dir, trinormal),0) * get_emission(i) * mesh->face_areas.at(i);
   }
-  L = intensity / (distance*distance);
-  float offset = 0.001f;
+  L = intensity/ (distance*distance);
   HitInfo hit = HitInfo();
-  Ray ray = Ray(pos, dir, 0, offset, distance - offset);
-  tracer->trace_to_closest(ray, hit);
+  Ray ray = Ray(pos, dir, 0, 0.001f, distance - 0.001f);
+  tracer->trace_to_any(ray, hit);
   return !(shadows && hit.has_hit);
 }
 
