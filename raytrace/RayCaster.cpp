@@ -15,17 +15,29 @@ using namespace optix;
 float3 RayCaster::compute_pixel(unsigned int x, unsigned int y) const
 {
   
-  float3 result; 
-  HitInfo hit;
-  Ray temp = scene->get_camera()->get_ray(make_float2(x, y) * win_to_ip + lower_left);
-  if (scene->closest_hit(temp, hit)) {
-    float3 dir = temp.direction * 0.5 + 0.5;
-    result = get_shader(hit)->shade(temp,hit);
+  float3 result = make_float3(0.f);
+  HitInfo hit = HitInfo();
+  float resolutionx = 1.0f / win_to_ip.x;
+  float resolutiony = 1.0f / win_to_ip.y;
+  float diff = resolutionx / resolutiony;
+  float xip = (x + 0.5f) / (resolutionx)-(0.5f)*(diff);
+  float yip = (y + 0.5f) / (resolutiony) - (0.5f) * (diff);
+
+
+  for (int i = 0; i < subdivs; ++i) {
+      for (int j = 0; j < subdivs; ++j) {
+          Ray ray = scene->get_camera()->get_ray(make_float2(xip, yip) +jitter[i*subdivs*j]);
+          if (scene->closest_hit(ray, hit)) {
+              float3 dir = ray.direction * 0.5 + 0.5;
+              result += get_shader(hit)->shade(ray, hit);
+          }
+          else {
+              result += get_background(ray.direction);
+          }
+        }
   }
-  else {
-      result = get_background(temp.direction);
-  }
-  
+  result = result / (float)(subdivs * subdivs);
+
 
   // Use the scene and its camera
   // to cast a ray that computes the color of the pixel at index (x, y).
