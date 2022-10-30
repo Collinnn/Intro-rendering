@@ -41,8 +41,14 @@ bool BspTree::closest_hit(Ray& r, HitInfo& hit) const
   // Accelerator::closest_hit(...) to use the BSP tree.
   // Using intersect_min_max(...) before intersect_node(...) gives
   // a good speed-up in many scenes.
+    closest_plane(r, hit);
+    if (intersect_min_max(r)) {
+        intersect_node(r, hit, *root);
+    }
 
-  return Accelerator::closest_hit(r, hit);
+
+    
+  return hit.has_hit;
 }
 
 bool BspTree::any_hit(Ray& r, HitInfo& hit) const
@@ -51,8 +57,12 @@ bool BspTree::any_hit(Ray& r, HitInfo& hit) const
   // Accelerator::any_hit(...) to use the BSP tree.
   // Using intersect_min_max(...) before intersect_node(...) gives
   // a good speed-up in many scenes.
+    any_plane(r, hit);
+    if (intersect_min_max(r)) {
+        intersect_node(r, hit, *root);
+    }
   
-  return Accelerator::any_hit(r, hit);
+    return hit.has_hit;
 }
 
 bool BspTree::intersect_min_max(Ray& r) const
