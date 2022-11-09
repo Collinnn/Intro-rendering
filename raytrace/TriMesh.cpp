@@ -56,7 +56,7 @@ bool TriMesh::intersect(const Ray& r, HitInfo& hit, unsigned int prim_idx) const
     //Vertex triangle coordinates 
     float3 geometric_normal; 
     float t, alpha, beta, gamma ; 
-    bool is_hit = ::intersect_triangle(r, geometry.vertex(face.x), geometry.vertex(face.y), geometry.vertex(face.z),geometric_normal, t, beta, gamma);
+    const bool is_hit = ::intersect_triangle(r, geometry.vertex(face.x), geometry.vertex(face.y), geometry.vertex(face.z),geometric_normal, t, beta, gamma);
     
     if (is_hit) {
         hit.dist = t;
