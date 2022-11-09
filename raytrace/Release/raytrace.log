@@ -1,0 +1,7 @@
+﻿  RenderEngine.cpp
+  Generating code
+  85 of 2053 functions ( 4.1%) were compiled, the rest were copied from previous compilation.
+    0 functions were new in current compilation
+    60 functions had inline decision re-evaluated but remain unchanged
+  Finished generating code
+  raytrace.vcxproj -> C:\Users\Tobias Collin\Documents\GitHub\Intro-rendering\Release\raytrace.exe
