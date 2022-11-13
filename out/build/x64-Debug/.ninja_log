@@ -102,3 +102,10 @@
 1718	2545	6878881427447752	CMakeFiles/raytrace.dir/raytrace/Transparent.cpp.obj	c212612376b20ef0
 1756	2551	6878881427512771	CMakeFiles/raytrace.dir/raytrace/Volume.cpp.obj	21dce7c95d9e8ba7
 1965	2605	6878881428052752	CMakeFiles/raytrace.dir/raytrace/raytrace.cpp.obj	dcbfc8992281e48f
+11	614	6880580641566850	CMakeFiles/raytrace.dir/raytrace/Triangle.cpp.obj	e856f084897d3df0
+4	623	6880580641656869	CMakeFiles/raytrace.dir/raytrace/Accelerator.cpp.obj	dad94b12e438d61a
+9	651	6880580641941845	CMakeFiles/raytrace.dir/raytrace/TriMesh.cpp.obj	53527fd368f3da9c
+7	718	6880580642611865	CMakeFiles/raytrace.dir/raytrace/PointLight.cpp.obj	38b2771b9b80d6e8
+1	718	6880580642621841	CMakeFiles/raytrace.dir/raytrace/AreaLight.cpp.obj	67a2d3168924cbde
+5	712	6888410732235149	CMakeFiles/raytrace.dir/raytrace/Triangle.cpp.obj	e856f084897d3df0
+1	444	6888410954700412	CMakeFiles/raytrace.dir/raytrace/RayCaster.cpp.obj	47749d89cd2fddb

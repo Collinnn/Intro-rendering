@@ -1,4 +1,62 @@
 ﻿cl : command line  warning D9035: option 'Gm' has been deprecated and will be removed in a future release
+cl : command line  warning D9030: '/Gm' is incompatible with multiprocessing; ignoring /MP switch
+  raytrace.cpp
+  Texture.cpp
+  SphereTexture.cpp
+  InvSphereMap.cpp
+  HDRTexture.cpp
+  Gamma.cpp
+  TriMesh.cpp
+  obj_load.cpp
+  BspTree.cpp
+  Accelerator.cpp
+C:\Users\Tobias Collin\Documents\GitHub\Intro-rendering\raytrace\Accelerator.cpp(39,23): warning C4018: '<': signed/unsigned mismatch
+  Triangle.cpp
+  Sphere.cpp
+  Plane.cpp
+  Randomizer.cpp
+  string_utils.cpp
+  RenderEngine.cpp
+  PointLight.cpp
+  Directional.cpp
   AreaLight.cpp
 C:\Users\Tobias Collin\Documents\GitHub\Intro-rendering\raytrace\AreaLight.cpp(50,21): warning C4018: '<': signed/unsigned mismatch
+  Volume.cpp
+  Generating Code...
+  Compiling...
+  Transparent.cpp
+  Textured.cpp
+  PhotonCaustics.cpp
+  Phong.cpp
+C:\Users\Tobias Collin\Documents\GitHub\Intro-rendering\raytrace\Phong.cpp(46,21): warning C4018: '<': signed/unsigned mismatch
+C:\Users\Tobias Collin\Documents\GitHub\Intro-rendering\raytrace\Phong.cpp(48,22): warning C4018: '<': signed/unsigned mismatch
+  Mirror.cpp
+  Lambertian.cpp
+C:\Users\Tobias Collin\Documents\GitHub\Intro-rendering\raytrace\Lambertian.cpp(44,22): warning C4018: '<': signed/unsigned mismatch
+  GlossyVolume.cpp
+  Glossy.cpp
+  RayTracer.cpp
+  RayCaster.cpp
+C:\Users\Tobias Collin\Documents\GitHub\Intro-rendering\raytrace\RayCaster.cpp(21,21): warning C4018: '<': signed/unsigned mismatch
+C:\Users\Tobias Collin\Documents\GitHub\Intro-rendering\raytrace\RayCaster.cpp(22,25): warning C4018: '<': signed/unsigned mismatch
+  ParticleTracer.cpp
+  Scene.cpp
+  QuatTrackBall.cpp
+  PathTracer.cpp
+  PanoramicTexture.cpp
+  PanoramicLight.cpp
+  MerlTexture.cpp
+  MerlShader.cpp
+  MCGlossy.cpp
+  Holdout.cpp
+  Generating Code...
+  Compiling...
+  GLViewController.cpp
+  Distribution2D.cpp
+  Distribution1D.cpp
+  Camera.cpp
+C:\Users\Tobias Collin\Documents\GitHub\Intro-rendering\raytrace\Camera.cpp(43,30): warning C4228: nonstandard extension used: qualifiers after comma in declarator list are ignored
+  BRDF.cpp
+  Generating Code...
+BRDF.obj : warning LNK4075: ignoring '/EDITANDCONTINUE' due to '/SAFESEH' specification
   raytrace.vcxproj -> C:\Users\Tobias Collin\Documents\GitHub\Intro-rendering\Debug\raytrace.exe
