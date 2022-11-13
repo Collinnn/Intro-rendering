@@ -42,8 +42,8 @@ namespace
 //////////////////////////////////////////////////////////////////////
 
 RenderEngine::RenderEngine() 
-  : win(optix::make_uint2(512, 512)),                        // Default window size
-    res(optix::make_uint2(1028, 1028)),                        // Default render resolution
+  : win(optix::make_uint2(1028, 512)),                        // Default window size
+    res(optix::make_uint2(1028, 512)),                        // Default render resolution
     image(res.x*res.y),
     image_tex(0),
     mouse_state(GLUT_UP),
@@ -61,7 +61,7 @@ RenderEngine::RenderEngine()
     use_default_light(false),                                 // Choose whether to use the default light or not
     shadows_on(true),
     background(optix::make_float3(0.1f, 0.3f, 0.6f)),        // Background color
-    bgtex_filename("../models/clarens_midday_2k.hdr"),                                      // Background texture file name
+    bgtex_filename("../models/pedestrian_overpass_4k.hdr"),                                      // Background texture file name
     current_shader(0),
     lambertian(scene.get_lights()),
     photon_caustics(&tracer, scene.get_lights(), 1.0f, 50),  // Max distance and number of photons to search for
