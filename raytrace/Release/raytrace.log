@@ -1,7 +1,9 @@
-﻿  RenderEngine.cpp
+﻿  MCGlossy.cpp
+C:\Users\Tobias Collin\Documents\GitHub\Intro-rendering\raytrace\sampler.h(60,17): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
+C:\Users\Tobias Collin\Documents\GitHub\Intro-rendering\raytrace\sampler.h(61,15): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
   Generating code
-  85 of 2053 functions ( 4.1%) were compiled, the rest were copied from previous compilation.
+  9 of 2054 functions ( 0.4%) were compiled, the rest were copied from previous compilation.
     0 functions were new in current compilation
-    60 functions had inline decision re-evaluated but remain unchanged
+    24 functions had inline decision re-evaluated but remain unchanged
   Finished generating code
   raytrace.vcxproj -> C:\Users\Tobias Collin\Documents\GitHub\Intro-rendering\Release\raytrace.exe

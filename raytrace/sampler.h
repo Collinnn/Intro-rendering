@@ -47,7 +47,7 @@ inline optix::float3 spherical_direction(double sin_theta, double cos_theta, dou
 inline optix::float3 sample_hemisphere(const optix::float3& normal)
 {
   // Get random numbers
-
+   
   // Calculate new direction as if the z-axis were the normal
 
   // Rotate from z-axis to actual normal and return
@@ -56,12 +56,19 @@ inline optix::float3 sample_hemisphere(const optix::float3& normal)
 
 inline optix::float3 sample_cosine_weighted(const optix::float3& normal)
 {
-  // Get random numbers
+    // Get random numbers
+    float theta = acos(sqrt(1 - mt_random_half_open()));
+    float phi = 2.0f * M_PIf * mt_random_half_open();
 
-  // Calculate new direction as if the z-axis were the normal
+    // Calculate new direction as if the z-axis were the normal
 
-  // Rotate from z-axis to actual normal and return
-  return optix::make_float3(0.0f);
+    float sintheta = sin(theta);
+    optix::float3 omega = optix::make_float3(cos(phi) * sintheta, sin(phi) * sintheta, cos(theta));
+
+
+    // Rotate from z-axis to actual normal and return
+    rotate_to_normal(normal, omega);
+    return omega;
 }
 
 inline optix::float3 sample_Phong_distribution(const optix::float3& normal, const optix::float3& dir, float shininess)
