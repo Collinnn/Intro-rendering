@@ -15,7 +15,7 @@ using namespace optix;
 bool AreaLight::sample(const float3& pos, float3& dir, float3& L) const
 
 {
-  const IndexedFaceSet& normals = mesh->normals;
+	const IndexedFaceSet& normals = mesh->normals;
   L = make_float3(0.0f);
 
   // Compute output and return value given the following information.
@@ -37,23 +37,42 @@ bool AreaLight::sample(const float3& pos, float3& dir, float3& L) const
   //        the light source bounding box.
   //        (b) Use the function get_emission(...) to get the radiance
   //        emitted by a triangle in the mesh.
+  const int tri = floor(mt_random_half_open()*mesh->geometry.no_faces());
+  const float rand1 = sqrt(mt_random_half_open());
+  const float rand2 = mt_random_half_open();
 
-  const float3& center = mesh->compute_bbox().center();
+  //Bayercentric coords
+  const float u = 1 -rand1;
+  const float v = (1-rand2)*rand1;
+  const float w = rand2 * rand1;
+
+  const uint3& vertex = mesh->geometry.face(tri);
+  const uint3& normal = normals.face(tri);
+  
+  float3 xlj = mesh->geometry.vertex(vertex.x)*u+ mesh->geometry.vertex(vertex.y)*v+ mesh->geometry.vertex(vertex.z)*w;;
+  float3 nlj =  normals.vertex(normal.x)*u+normals.vertex(normal.y)*v+normals.vertex(normal.z);
+  
+
+  const float3& center = xlj;
   const float3& centerpos = (center - pos);
   const float distance = sqrt((centerpos.x*centerpos.x) +(centerpos.y* centerpos.y) + (centerpos.z*centerpos.z));
   dir = normalize(centerpos);
 
   //calc intensity of light
   float3 intensity = make_float3(0.0);
-  float3 trinormal;
-  for (int i = 0; i < mesh->geometry.no_faces(); i++) {
+  float3 trinormal = nlj;
+  for (int i = 1; i < mesh->geometry.no_faces(); i++) {
 	  const uint3& face = normals.face(i);
 	  trinormal = normalize(normals.vertex(face.x) + normals.vertex(face.y)+normals.vertex(face.z));
 	  intensity += fmaxf(dot(-dir, trinormal),0) * get_emission(i) * mesh->face_areas.at(i);
   }
   L = intensity/ (distance*distance);
   HitInfo hit = HitInfo();
+  dir = normalize(xlj - pos);
+  
   Ray ray = Ray(pos, dir, 0, 0.001f, distance - 0.001f);
+
+  
   tracer->trace_to_any(ray, hit);
   return !(shadows && hit.has_hit);
 }

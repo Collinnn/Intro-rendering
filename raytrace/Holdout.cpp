@@ -28,6 +28,14 @@ float3 Holdout::shade(const Ray& r, HitInfo& hit, bool emit) const
   // Hint: Use the function tracer->trace_to_closest(...) to trace
   //       a new ray in a direction sampled on the hemisphere around the
   //       surface normal according to the function sample_cosine_weighted(...).
-
-  return ambient*tracer->get_background(r.direction);
+  for (int i = 0; i < samples; i++) {
+	  Ray indir = make_Ray(hit.position, sample_cosine_weighted(r.direction), 0, 1e4f, RT_DEFAULT_MAX);
+	  HitInfo newhit;
+	  newhit.trace_depth = hit.trace_depth+1;
+	  
+	  if (!tracer->trace_to_closest(indir, newhit)) {
+		  ambient += 1.0;
+	  }
+  }
+  return (ambient/samples)*tracer->get_background(r.direction);
 }
