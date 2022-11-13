@@ -38,7 +38,7 @@ bool RayTracer::trace_reflected(const Ray& in, const HitInfo& in_hit, Ray& out, 
   return trace_to_closest(out,out_hit);
 }
 
-bool RayTracer::trace_refracted(const Ray& in, const HitInfo& in_hit, Ray& out, HitInfo& out_hit,float& R) const
+bool RayTracer::trace_refracted(const Ray& in, const HitInfo& in_hit, Ray& out, HitInfo& out_hit) const
 {
   // Initialize the refracted ray and trace it.
   //
@@ -60,23 +60,19 @@ bool RayTracer::trace_refracted(const Ray& in, const HitInfo& in_hit, Ray& out, 
 
 	float angle = dot(normaldir, materialNormal);
 	float out_ior = get_ior_out(in, in_hit, materialNormal);
-	float cos_theta_in = dot(materialNormal, normaldir);
+	float ior = in_hit.ray_ior / out_ior;
+	float cos2thetat = (1 - (ior * ior) * (1 - (angle * angle)));
 
 	//if (0 > cos2thetat)  return false;
-	if (!refract(out.direction, in.direction, normaldir, out_hit.ray_ior / in_hit.ray_ior)) {
-		R = 1.0;
-		return false;
-	}
+	if (!refract(out.direction, in.direction, normaldir, out_hit.ray_ior / in_hit.ray_ior)) return false;
 
-	out.direction =  ((angle)*materialNormal - normaldir) - materialNormal * sqrtf(cos2thetat);
+	out.direction = ior * ((angle)*materialNormal - normaldir) - materialNormal * sqrtf(cos2thetat);
 	refract(out.direction, in.direction, materialNormal, 1 / ior);
 	out_hit.trace_depth = in_hit.trace_depth + 1;
 	out_hit.ray_ior = out_ior;
 	out.origin = in_hit.position;
 	out.tmin = 1e-4f;
 	out.tmax = RT_DEFAULT_MAX;
-
-	R=fresnel_R(cos)
 	return trace_to_closest(out, out_hit);
  
 }
@@ -97,8 +93,37 @@ bool RayTracer::trace_refracted(const Ray& in, const HitInfo& in_hit, Ray& out, 
   // Hints: (a) There is a refract function available in the OptiX math library.
   //        (b) Set out_hit.ray_ior and out_hit.trace_depth.
   //        (c) Remember that the function must handle total internal reflection.
-  R = 0.1;
-  return trace_refracted(in, in_hit, out, out_hit);
+  
+	float3 dir = in.origin - in_hit.position;
+	float3 normaldir = normalize(dir);
+	float3 materialNormal = normalize(in_hit.geometric_normal);
+
+	float angle = dot(normaldir, materialNormal);
+	float out_ior = get_ior_out(in, in_hit, materialNormal);
+	float ior = in_hit.ray_ior / out_ior;
+	float cos2thetat = (1 - (ior * ior) * (1 - (angle * angle)));
+
+	//if (0 > cos2thetat)  return false;
+	if (!refract(out.direction, in.direction, normaldir, out_hit.ray_ior / in_hit.ray_ior)) {
+		R = 1.0;
+		return false;
+	}
+
+	out.direction = ior * ((angle)*materialNormal - normaldir) - materialNormal * sqrtf(cos2thetat);
+	refract(out.direction, in.direction, materialNormal, 1 / ior);
+	out_hit.trace_depth = in_hit.trace_depth + 1;
+	out_hit.ray_ior = out_ior;
+	out.origin = in_hit.position;
+	out.tmin = 1e-4f;
+	out.tmax = RT_DEFAULT_MAX;
+
+	float angle2 = dot(out.direction, materialNormal);
+
+	float cos2thetat2 = (1 - (ior * ior) * (1 - (angle2 * angle2)));
+	
+	R = fresnel_R(cos2thetat, cos2thetat2,in_hit.ray_ior,out_ior);
+
+	return trace_to_closest(out, out_hit);
 }
 
 float RayTracer::get_ior_out(const Ray& in, const HitInfo& in_hit, float3& normal) const
