@@ -43,7 +43,7 @@ namespace
 
 RenderEngine::RenderEngine() 
   : win(optix::make_uint2(512, 512)),                        // Default window size
-    res(optix::make_uint2(1028, 1028)),                        // Default render resolution
+    res(optix::make_uint2(512, 512)),                        // Default render resolution
     image(res.x*res.y),
     image_tex(0),
     mouse_state(GLUT_UP),
