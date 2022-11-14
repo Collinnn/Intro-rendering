@@ -38,7 +38,7 @@ float3 GlossyVolume::shade(const Ray& r, HitInfo& hit, bool emit) const
 				else {
 					a = int_pow(a, n);
 				}
-				acc += L * rhos_s * a;
+				acc += L * rho_s * a;
 			}
 		}
 	}
