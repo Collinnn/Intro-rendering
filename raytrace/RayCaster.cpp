@@ -19,14 +19,14 @@ float3 RayCaster::compute_pixel(unsigned int x, unsigned int y) const
   HitInfo hit = HitInfo();
   float resolutionx = 1.0f / win_to_ip.x;
   float resolutiony = 1.0f / win_to_ip.y;
-  float diff = resolutionx / resolutiony;
+  float diff = (float)width / (float)height;
   float xip = (x + 0.5f) / (resolutionx)-(0.5f)*(diff);
-  float yip = (y + 0.5f) / (resolutiony) - (0.5f) * (diff);
+  float yip = (y + 0.5f) / (resolutiony) - (0.5f);
 
 
   for (int i = 0; i < subdivs; ++i) {
       for (int j = 0; j < subdivs; ++j) {
-          Ray ray = scene->get_camera()->get_ray(make_float2(xip, yip) +jitter[i*subdivs*j]);
+          Ray ray = scene->get_camera()->get_ray(make_float2(xip, yip) +jitter[i+subdivs*j]);
           if (scene->closest_hit(ray, hit)) {
               float3 dir = ray.direction * 0.5 + 0.5;
               result += get_shader(hit)->shade(ray, hit);

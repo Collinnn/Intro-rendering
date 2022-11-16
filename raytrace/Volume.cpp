@@ -12,8 +12,8 @@ float3 Volume::shade(const Ray& r, HitInfo& hit, bool emit) const
 {
     // If inside the volume, Find the direct transmission through the volume by using
     // the transmittance to modify the result from the Transparent shader.
-    const bool inside = dot(r.direction, hit.shading_normal) > 0;
-    if (inside) {
+   
+    if (dot(r.direction, hit.shading_normal) > 0) {
         return Transparent::shade(r, hit, emit) * get_transmittance(hit);
     }
     else {

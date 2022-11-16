@@ -33,9 +33,9 @@ float3 MCGlossy::shade(const Ray& r, HitInfo& hit, bool emit) const
         out.tmin = 1e-4f;
         out.tmax = RT_DEFAULT_MAX;
         tracer->trace_to_closest(out, ref_hit);
-        result = shade_new_ray(out, ref_hit) * rho_d;
+        result = shade_new_ray(out, ref_hit,false) * rho_d/probability;
     }//In the case of absorption do nothing, therefore no else case.
-    result += Lambertian::shade(r, hit, emit) * rho_d;
+    result += Lambertian::shade(r, hit, emit);
     result += Emission::shade(r, hit, emit);
     return result;
 
