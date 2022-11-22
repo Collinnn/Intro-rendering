@@ -62,7 +62,7 @@ RenderEngine::RenderEngine()
     shadows_on(true),
     background(optix::make_float3(0.1f, 0.3f, 0.6f)),        // Background color
     //bgtex_filename("../models/luxo_pxr_campus.jpg"),   
-    //bgtex_filename("../models/pedestrian_overpass_4k.hdr"),                                      // Background texture file name
+    bgtex_filename("../models/pedestrian_overpass_4k.hdr"),                                      // Background texture file name
     current_shader(0),
     lambertian(scene.get_lights()),
     photon_caustics(&tracer, scene.get_lights(), 1.0f, 50),  // Max distance and number of photons to search for
