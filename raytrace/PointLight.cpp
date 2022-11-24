@@ -63,7 +63,7 @@ bool PointLight::emit(Ray& r, HitInfo& hit, float3& Phi) const
   //       mt_random() to get a random number in [0,1].
 
   // Sample ray direction and create ray
-	float3 dir
+	float3 dir;
 		do {
 			dir.x = 2.0f * mt_random() - 1.0f;
 			dir.y = 2.0f * mt_random() - 1.0f;
@@ -77,7 +77,7 @@ bool PointLight::emit(Ray& r, HitInfo& hit, float3& Phi) const
 		if (tracer->trace_to_closest(r, hit)) {
 
 			// If a surface was hit, compute Phi and return true
-			Phi = intensity * 4 * M_Pif; //This was not figured out.
+			Phi = intensity * 4 * M_1_PIf; //This was not figured out.
 			return true;
 		}
   

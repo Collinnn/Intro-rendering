@@ -99,12 +99,30 @@ void ParticleTracer::trace_particle(const Light* light, const unsigned int caust
     case 3:  // mirror materials
       {
         // Forward from mirror surfaces here
+        Ray out;
+        HitInfo hit_out;
+        if (!trace_reflected(r, hit, out, hit_out)) {
+            return;
+        }
+        phi *= get_transmittance(hit);
+        r = out;
+        hit = hit_out;
         return;
       }
       break;
     case 11: // absorbing volume
     case 12: // absorbing glossy volume
       {
+        Ray out;
+        HitInfo hit_out = hit;
+        if(!trace_reflected(r,hit,out,hit_out)){
+            return;
+        }
+   
+
+            float3 transmit = expf(-get_transmittance(hit) * hit.dist);
+            float average = (transmit.x + transmit.y + transmit.z) / 3;
+
         // Handle absorption here (Worksheet 8)
       }
     case 2:  // glossy materials
