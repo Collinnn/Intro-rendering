@@ -68,7 +68,7 @@ bool PointLight::emit(Ray& r, HitInfo& hit, float3& Phi) const
 			dir.x = 2.0f * mt_random() - 1.0f;
 			dir.y = 2.0f * mt_random() - 1.0f;
 			dir.z = 2.0f * mt_random() - 1.0f;
-		} while (dot(dir, dir) > 1);
+		} while (dot(dir, dir) > 1.0f);
 		dir = normalize(dir);
 
   // Trace ray
@@ -77,10 +77,9 @@ bool PointLight::emit(Ray& r, HitInfo& hit, float3& Phi) const
 		if (tracer->trace_to_closest(r, hit)) {
 
 			// If a surface was hit, compute Phi and return true
-			Phi = intensity * 4 * M_1_PIf; //This was not figured out.
+			Phi = intensity * 4 * M_PIf;
 			return true;
 		}
-  
 
   return false;
 }

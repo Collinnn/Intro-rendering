@@ -90,7 +90,9 @@ void ParticleTracer::trace_particle(const Light* light, const unsigned int caust
   // Shoot a particle from the sampled source
   Ray r;
   HitInfo hit;
-
+  float3 phi;
+  light->emit(r, hit, phi);
+  
   // Forward from all specular surfaces
   while(scene->is_specular(hit.material) && hit.trace_depth < 500)
   {
@@ -104,10 +106,10 @@ void ParticleTracer::trace_particle(const Light* light, const unsigned int caust
         if (!trace_reflected(r, hit, out, hit_out)) {
             return;
         }
-        phi *= get_transmittance(hit);
+        
         r = out;
         hit = hit_out;
-        return;
+       
       }
       break;
     case 11: // absorbing volume
@@ -118,16 +120,26 @@ void ParticleTracer::trace_particle(const Light* light, const unsigned int caust
         if(!trace_reflected(r,hit,out,hit_out)){
             return;
         }
-   
-
             float3 transmit = expf(-get_transmittance(hit) * hit.dist);
             float average = (transmit.x + transmit.y + transmit.z) / 3;
-
+            if (rand() % 1000 < average * 1000) {
+                phi *= transmit / average;
+            }
+            r = out;
+            hit = hit_out;
         // Handle absorption here (Worksheet 8)
       }
     case 2:  // glossy materials
     case 4:  // transparent materials
       {
+        Ray out;
+        HitInfo hit_out = hit;
+        float R;
+        if (!trace_refracted(r, hit, out, hit_out, R)) return;
+        if (rand() % 100 < R * 100) {
+            if (!trace_reflected(r, hit, out, hit_out)) return;
+        }
+
         // Forward from transparent surfaces here
         return;
       }
@@ -140,6 +152,9 @@ void ParticleTracer::trace_particle(const Light* light, const unsigned int caust
   // Store in caustics map at first diffuse surface
   // Hint: When storing, the convention is that the photon direction
   //       should point back toward where the photon came from.
+  if (hit.trace_depth > 0 && hit.trace_depth < 500) {
+      caustics.store(phi, hit.position, -r.direction);
+  }
 }
 
 float3 ParticleTracer::get_diffuse(const HitInfo& hit) const
